@@ -18,4 +18,9 @@ node3_public=${public_dns[3]}
 ./deploy_node.sh $node3_public $mngr_internal
 ./finalize_cluster.sh $mngr_public
 
-echo $mngr_public 
+echo "{
+    \"manager_addr\": \"$mngr_internal\",
+    \"node1_addr\": \"${internal_dns[1]}\",
+    \"node2_addr\": \"${internal_dns[2]}\",
+    \"node3_addr\": \"${internal_dns[3]}\",
+}" > ./data/cluster_info.json

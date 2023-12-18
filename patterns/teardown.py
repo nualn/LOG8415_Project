@@ -10,8 +10,20 @@ Calls the teardown() method on the instances object, presumably to perform clean
 """
 
 if __name__ == "__main__":
-    data = load_dict_from_file('./data/aws_resources.json')
-    instances = Instances(
-        data["instance_ids"], data["security_group"], data["key"]
+    cluster_data = load_dict_from_file('./data/cluster_resources.json')
+    proxy_data = load_dict_from_file('./data/proxy_resources.json')
+    gatekeeper_data = load_dict_from_file('./data/gatekeeper_resources.json')
+
+    cluster_instances = Instances(
+        cluster_data["instance_ids"], cluster_data["security_group"], cluster_data["key"]
     )
-    instances.teardown()
+    proxy_instances = Instances(
+        proxy_data["instance_ids"], proxy_data["security_group"], proxy_data["key"]
+    )
+    gatekeeper_instances = Instances(
+        gatekeeper_data["instance_ids"], gatekeeper_data["security_group"], gatekeeper_data["key"]
+    )
+
+    cluster_instances.teardown()
+    proxy_instances.teardown()
+    gatekeeper_instances.teardown()

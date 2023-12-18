@@ -9,8 +9,8 @@ ImageId = "ami-0a6b2839d44d781b2"
 
 class Instances:
 
-    def __init__(self, worker_ids=[], security_group=None, key=None):
-        self.instance_ids = worker_ids
+    def __init__(self, instance_ids=[], security_group=None, key=None):
+        self.instance_ids = instance_ids
         self.security_group = security_group
         self.key = key
 
@@ -47,11 +47,13 @@ class Instances:
             self.instance_ids.append(response["Instances"][0]["InstanceId"])
             print(f'Launched instance {i}')
 
-    def create_security_group(self, vpc_id):
+    def create_security_group(self, vpc_id, allow_ssh=False, allow_http=False):
         """create a security group, needed for instances
 
         Args:
             vpc_id (string): needed for security group
+            allow_ssh (bool, optional): allow external ssh connection. Defaults to False.
+            allow_http (bool, optional): allow external http connection. Defaults to False.
         """
 
         groupName = ''.join(random.choice(
@@ -73,24 +75,23 @@ class Instances:
             'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
         }
 
-        mysql_rule = {
-            'IpProtocol': 'tcp',
-            'FromPort': 3306,
-            'ToPort': 3306,
-            'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-        }
-
         response = ec2.create_security_group(
             GroupName=groupName,
-            Description='Allow HTTP and SSH access',
+            Description='Security group for the pattern project',
             VpcId=vpc_id
         )
 
         security_group_id = response['GroupId']
 
+        permission = []
+        if allow_ssh:
+            permission.append(ssh_rule)
+        if allow_http:
+            permission.append(http_rule)
+
         ec2.authorize_security_group_ingress(
             GroupId=security_group_id,
-            IpPermissions=[ssh_rule, http_rule, mysql_rule],
+            IpPermissions=permission
         )
 
         self.security_group = {
