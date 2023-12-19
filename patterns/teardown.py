@@ -1,6 +1,6 @@
 
-from instances import Instances
-from utils import load_dict_from_file
+from python_lib.instances import Instances
+from python_lib.utils import load_dict_from_file
 
 """Imports the Instances class from the instances module.
 Imports the load_dict_from_file function from the utils module.

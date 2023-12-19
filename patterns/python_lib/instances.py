@@ -9,8 +9,8 @@ ImageId = "ami-0a6b2839d44d781b2"
 
 class Instances:
 
-    def __init__(self, instance_ids=[], security_group=None, key=None):
-        self.instance_ids = instance_ids
+    def __init__(self, instance_ids=None, security_group=None, key=None):
+        self.instance_ids = instance_ids if instance_ids else []
         self.security_group = security_group
         self.key = key
 

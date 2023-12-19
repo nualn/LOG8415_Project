@@ -1,5 +1,5 @@
-from instances import Instances
-from utils import save_dict_to_file
+from python_lib.instances import Instances
+from python_lib.utils import save_dict_to_file
 
 """
 This script is used to set up a cluster of instances on AWS. 
@@ -21,11 +21,12 @@ if __name__ == "__main__":
         4, "t2.micro", cluster_security_groups)
 
     # launch instances for the proxy
-    proxy_instances = Instances(key=cluster_instances.key)
+    proxy_instances = Instances(
+        key=cluster_instances.key, security_group=cluster_instances.security_group)
     proxy_instances.launch_n_instances(
         1, "t2.large", cluster_security_groups)
 
-    # launch instances for the proxy
+    # launch instances for the gatekeeper
     gatekeeper_instances = Instances(key=cluster_instances.key)
     gatekeeper_instances.create_security_group(
         vpc_id, allow_ssh=True, allow_http=True)

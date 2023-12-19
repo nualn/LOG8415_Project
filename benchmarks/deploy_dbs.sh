@@ -1,8 +1,8 @@
 #!/bin/bash
 
 machine_ip=$(curl ifconfig.me)
-public_dns=($(python3 get_public_dns.py))
-internal_dns=($(python3 get_internal_dns.py))
+public_dns=($(python3 -m address_getters.get_public_dns))
+internal_dns=($(python3 -m address_getters.get_internal_dns))
 
 # Cluster deployment variables
 mngr_public=${public_dns[0]}
