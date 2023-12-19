@@ -5,7 +5,7 @@ server_addr=$(python3 -m address_getters.get_public_dns_gatekeeper)
 proxy_addr=$(python3 -m address_getters.get_private_dns_proxy)
 
 # Copy the gatekeeper program to the remote server using SCP
-scp -oStrictHostKeyChecking=no -i ./data/key.pem ./gatekeeper.py ubuntu@$server_addr:gatekeeper.py
+scp -oStrictHostKeyChecking=no -i ./data/key.pem ./flask_apps/gatekeeper.py ubuntu@$server_addr:gatekeeper.py
 
 # SSH into the remote server and execute commands to run the gatekeeper
 ssh -oStrictHostKeyChecking=no -tt -i ./data/key.pem ubuntu@$server_addr << EOF

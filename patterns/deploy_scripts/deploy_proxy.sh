@@ -4,7 +4,7 @@
 server_addr=$(python3 -m address_gettrs/get_public_dns_proxy)
 
 # Copy the proxy program to the remote server using SCP
-scp -oStrictHostKeyChecking=no -i ./data/key.pem ./proxy.py ubuntu@$server_addr:proxy.py
+scp -oStrictHostKeyChecking=no -i ./data/key.pem ./flask_apps/proxy.py ubuntu@$server_addr:proxy.py
 scp -oStrictHostKeyChecking=no -i ./data/key.pem ./data/cluster_info.json ubuntu@$server_addr:cluster_info.json
 
 # SSH into the remote server and execute commands to run the proxy
