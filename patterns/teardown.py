@@ -24,6 +24,11 @@ if __name__ == "__main__":
         gatekeeper_data["instance_ids"], gatekeeper_data["security_group"], gatekeeper_data["key"]
     )
 
+    gatekeeper_instances.terminate_instances()
+    gatekeeper_instances.wait_for_instances_terminated()
+    gatekeeper_instances.remove_security_group()
+
+    proxy_instances.terminate_instances()
+    proxy_instances.wait_for_instances_terminated()
+
     cluster_instances.teardown()
-    proxy_instances.teardown()
-    gatekeeper_instances.teardown()
