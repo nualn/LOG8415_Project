@@ -1,49 +1,31 @@
 #!/bin/bash
 
-build() {
-    docker build -t tp2-image .
-    docker run -d --name container tp2-image
-}
-
 setup() {
     echo "Executing environment setup..."
-
-    docker exec container python3 setup.py
-    docker exec container ./deploy_workers.sh
-    docker exec container ./deploy_orchestrator.sh
+    python3 setup.py
+    ./deploy_all.sh
 }
 
-send_requests() {
-    echo "Running benchmark..."
-    docker exec container python3 request_sender.py
+example_request() {
+    echo "Making request..."
+    gatekeeper_address=$(./address_getters/get_public_dns_gatekeeper.py)
+    curl -X POST http://$gatekeeper_address/process_request -H "Content-Type: text/plain" -d "SELECT * FROM actor LIMIT 3;"
 }
 
 teardown() {
     echo "Terminating environment..."
-
-    docker exec container python3 teardown.py
-}
-
-kill_container() {
-    docker kill container
-    docker rm container
+    python3 teardown.py
 }
 
 case "$1" in
-    "build")
-        build
-        ;;
     "setup")
         setup
-        ;;
-    "send-requests")
-        send_requests
         ;;
     "teardown")
         teardown
         ;; 
-    "kill")
-        kill_container
+    "example_request")
+        example_request
         ;;
 esac
 
