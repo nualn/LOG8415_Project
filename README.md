@@ -9,7 +9,7 @@
 - Clone the repository
 - Make sure all the .sh files are executable
 
-### How to run the benchmark
+### How to setup and run the benchmark
 
 - Change the directory to the benchmark folder
 - Install the requirements with `pip install -r requirements.txt`

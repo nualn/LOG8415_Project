@@ -15,6 +15,7 @@ class Instances:
         self.key = key
 
     def create_key_pair(self):
+        """create a key pair, needed for ssh access to the instances"""
         ec2 = boto3.client('ec2')
         response = ec2.create_key_pair(
             KeyName='myKey',
@@ -24,7 +25,7 @@ class Instances:
         print("Created key pair")
 
     def launch_n_instances(self, n, type, security_groups):
-        """create the ec2 m4.large instances representing the workers
+        """create the ec2 instances representing the workers
 
         Args:
             security_groups : needed for the creation of the instances
@@ -66,23 +67,9 @@ class Instances:
             'IpRanges': [{'CidrIp': '1.0.0.0/0'}]
         }
 
-        http_rule = {
-            'IpProtocol': 'tcp',
-            'FromPort': 80,
-            'ToPort': 80,
-            'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-        }
-
-        mysql_rule = {
-            'IpProtocol': 'tcp',
-            'FromPort': 3306,
-            'ToPort': 3306,
-            'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-        }
-
         response = ec2.create_security_group(
             GroupName=groupName,
-            Description='Allow HTTP and SSH access',
+            Description='Allow SSH access',
             VpcId=vpc_id
         )
 
@@ -90,7 +77,7 @@ class Instances:
 
         ec2.authorize_security_group_ingress(
             GroupId=security_group_id,
-            IpPermissions=[ssh_rule, http_rule, mysql_rule],
+            IpPermissions=[ssh_rule],
         )
 
         self.security_group = {
@@ -123,6 +110,8 @@ class Instances:
     def get_vpc_id(self):
         """get the vpc_id of our AWS account that will be useful for the instances
 
+            Returns:
+                string: vpc_id
         """
         ec2 = boto3.client('ec2')
         response = ec2.describe_vpcs(
@@ -212,24 +201,18 @@ class Instances:
         return [reservation["Instances"][0]["PublicIpAddress"] for reservation in response["Reservations"]]
 
     def getPrivateIps(self, instance_ids):
+        """ gets the private ip addresses of the instances that will be useful for sending requests
+
+        Args:
+            instance_ids (list of strings)
+        Returns:
+            list of private ip addresses 
+        """
         ec2 = boto3.client('ec2')
         response = ec2.describe_instances(
             InstanceIds=instance_ids
         )
         return [reservation["Instances"][0]["PrivateIpAddress"] for reservation in response["Reservations"]]
-
-    def setup(self, n, type):
-        """function that setup all the instances by calling all the creation functions above
-        """
-
-        vpc_id = self.get_vpc_id()
-        self.create_security_group(vpc_id)
-        self.create_key_pair()
-
-        security_groups = ["default", self.security_group["name"]]
-
-        self.launch_n_instances(n, type, security_groups)
-        self.wait_for_instances_running()
 
     def teardown(self):
         """function that shut down all the instances and removing the security groups and so on
