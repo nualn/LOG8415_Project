@@ -1,7 +1,7 @@
 #!/bin/bash
 
-machine_ip=$(curl ifconfig.me)
 server_addr=$1
+benchmarker_ip=$2
 
 # SSH into the remote server and execute the following commands
 ssh -oStrictHostKeyChecking=no -tt -i ./data/key.pem ubuntu@${server_addr} << EOF
@@ -27,8 +27,8 @@ exit
 sudo systemctl restart mysql
 
 sudo mysql
-CREATE USER 'test'@'${machine_ip}' IDENTIFIED BY 'test';
-GRANT ALL PRIVILEGES ON *.* TO 'test'@'${machine_ip}';
+CREATE USER 'test'@'${benchmarker_ip}' IDENTIFIED BY 'test';
+GRANT ALL PRIVILEGES ON *.* TO 'test'@'${benchmarker_ip}';
 quit
 
 #Download sakila
