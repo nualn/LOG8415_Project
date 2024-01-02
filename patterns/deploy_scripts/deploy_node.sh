@@ -34,7 +34,7 @@ source /etc/profile.d/mysqlc.sh step
 
 sudo mkdir -p /opt/mysqlcluster/deploy/ndb_data
 
-sudo /opt/mysqlcluster/home/mysqlc/bin/ndbd -c $mngr_addr:1186
+sudo /opt/mysqlcluster/home/mysqlc/bin/ndbd -c $mngr_addr:1186 --bind-address=0.0.0.0
 exit 
 EOF
 

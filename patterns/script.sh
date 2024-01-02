@@ -8,7 +8,8 @@ setup() {
 
 example_request() {
     echo "Making request..."
-    gatekeeper_address=$(./address_getters/get_public_dns_gatekeeper.py)
+    gatekeeper_address=$(python3 -m address_getters.get_public_dns_gatekeeper)
+    echo "curl -X POST http://$gatekeeper_address/process_request -H 'Content-Type: text/plain' -d 'SELECT * FROM actor LIMIT 3;'"
     curl -X POST http://$gatekeeper_address/process_request -H "Content-Type: text/plain" -d "SELECT * FROM actor LIMIT 3;"
 }
 

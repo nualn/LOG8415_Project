@@ -111,13 +111,13 @@ class Instances:
         )
         print("Terminating instances")
 
-    def remove_security_group(self, security_group_id):
+    def remove_security_group(self):
         """automatically removes the security group so we don't have to do it on AWS (manually)
 
         """
         ec2 = boto3.client('ec2')
         ec2.delete_security_group(
-            GroupId=security_group_id
+            GroupId=self.security_group["id"]
         )
         print("Removed security group")
 
@@ -240,5 +240,5 @@ class Instances:
         self.terminate_instances()
         # Wait for orchestrator to terminate so that security group can be removed
         self.wait_for_instances_terminated()
-        self.remove_security_group(self.security_group["id"])
+        self.remove_security_group()
         self.delete_key_pair()

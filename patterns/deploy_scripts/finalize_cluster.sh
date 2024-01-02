@@ -1,6 +1,6 @@
 #!/bin/bash
 
-proxy_ip=$(python3 -m address_getters.get_private_dns_proxy)
+proxy_ip=$(python3 -m address_getters.get_private_ip_proxy)
 mngr_public=$1
 
 ssh -oStrictHostKeyChecking=no -tt -i ./data/key.pem ubuntu@$mngr_public << EOF
